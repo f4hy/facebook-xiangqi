@@ -1,0 +1,115 @@
+#!/usr/bin/env python3.0
+from piece import *
+
+class InvalidMove(Exception): pass
+
+class Board:
+    """This is the board object that stores position of the board"""
+
+    general = "帥"
+    advisor = "士"
+    elephant = "象"
+    horse = "馬"
+    chariot = "車"
+    cannon = "砲"
+    pawn = "卒"
+
+
+    def __init__(self,coordinates=None):
+        self.coordinates = [[None for i in range(9)] for j in range(10)]
+
+    def __repr__(self):
+        s = "\n"
+        count = 0
+        for row in self.coordinates:
+            count +=1
+            if count == 6:
+                s+="==================\n"
+            for piece in row:
+                if piece:
+                    s+=str(piece)
+                else:
+                    s+="  "
+            s+="\n"
+        return s
+    
+    def newgameboard(self):
+        p = Piece
+        #whites back row
+        self.coordinates[0] = [Rook("w"),Horse("w"),Elephant("w"),Advisor("w"),General("w"),Advisor("W"),Elephant("w"),Horse("w"),Rook("w")]
+
+        #black back row
+        self.coordinates[9] = [Rook("b"),Horse("b"),Elephant("b"),Advisor("b"),General("b"),Advisor("b"),Elephant("b"),Horse("b"),Rook("b")]
+
+        #white's pawns
+        self.coordinates[3][0] = Pawn("w")
+        self.coordinates[3][2] = Pawn("w")
+        self.coordinates[3][4] = Pawn("w")
+        self.coordinates[3][6] = Pawn("w")
+        self.coordinates[3][8] = Pawn("w")
+
+        #black's pawns
+        self.coordinates[6][0] = Pawn("b")
+        self.coordinates[6][2] = Pawn("b")
+        self.coordinates[6][4] = Pawn("b")
+        self.coordinates[6][6] = Pawn("b")
+        self.coordinates[6][8] = Pawn("b")
+
+        #white's cannons
+        self.coordinates[2][1] = Cannon("w")
+        self.coordinates[2][7] = Cannon("w")
+
+        #black's cannons
+        self.coordinates[7][1] = Cannon("b")
+        self.coordinates[7][7] = Cannon("b")
+
+    def point(self,index):
+        if 0 <= index[0] <= 9 and 0 <= index[1] <= 8 :
+            return self.coordinates[index[0]][index[1]]
+        return None
+            
+
+    def move(self,current,new):
+        def validmove():
+            if not self.point(current) : return False
+            if new[0] > len(self.coordinates) : return False
+            if new[1] > len(self.coordinates[0]) : return False
+            return True
+            
+        if validmove():
+            self.coordinates[new[0]][new[1]] = self.point(current)
+            self.coordinates[current[0]][current[1]] = None
+        else:
+            raise InvalidMove('Invalid move. No peice, or out of bounds')
+
+    def occupied(self):
+        s = [(i,j) for i in range(10) for j in range(9)]
+        return [p for p in s if self.point(p)]
+
+    def side(self,color):
+        s = [(i,j) for i in range(10) for j in range(9)]
+        return [p for p in s if self.point(p) if self.point(p).color is color]
+
+
+    def availiblemoves(self,location):
+        return self.point(location).possiblemoves(location,self)
+        
+
+if __name__ == "__main__" :
+    b = Board()
+    b.newgameboard()
+    try: 
+        b.move( (5,8),(5,8))
+    except InvalidMove as e: 
+        print(e)
+    print(b)
+    mypiece = b.point((6,8))
+    
+    print(mypiece)
+    print(b.occupied())
+    print(b.side('b'))
+#    print(b.availiblemoves((6,8)))
+    print(b.availiblemoves((0,0)))
+ 
+    for p in b.occupied():
+        print(b.point(p),b.availiblemoves(p))
