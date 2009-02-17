@@ -16,9 +16,11 @@ class Board:
 
 
     def __init__(self,coordinates=None):
+        """set up the boards coordinates for pieces"""
         self.coordinates = [[None for i in range(9)] for j in range(10)]
 
     def __repr__(self):
+        """Print out the state of the board"""
         s = "\n"
         count = 0
         for row in self.coordinates:
@@ -34,12 +36,17 @@ class Board:
         return s
     
     def newgameboard(self):
+        """Set the board to the start of a new game"""
         p = Piece
         #whites back row
-        self.coordinates[0] = [Rook("w"),Horse("w"),Elephant("w"),Advisor("w"),General("w"),Advisor("W"),Elephant("w"),Horse("w"),Rook("w")]
+        self.coordinates[0] = [Rook("w"),Horse("w"),Elephant("w"),
+                               Advisor("w"),General("w"),Advisor("W"),
+                               Elephant("w"),Horse("w"),Rook("w")]
 
         #black back row
-        self.coordinates[9] = [Rook("b"),Horse("b"),Elephant("b"),Advisor("b"),General("b"),Advisor("b"),Elephant("b"),Horse("b"),Rook("b")]
+        self.coordinates[9] = [Rook("b"),Horse("b"),Elephant("b"),
+                               Advisor("b"),General("b"),Advisor("b"),
+                               Elephant("b"),Horse("b"),Rook("b")]
 
         #white's pawns
         self.coordinates[3][0] = Pawn("w")
@@ -64,18 +71,20 @@ class Board:
         self.coordinates[7][7] = Cannon("b")
 
     def point(self,index):
+        """Return the piece on a point, or return none"""
         if 0 <= index[0] <= 9 and 0 <= index[1] <= 8 :
             return self.coordinates[index[0]][index[1]]
         return None
             
 
     def move(self,current,new):
+        """Move a piece from one spot to annother"""
         def validmove():
             if not self.point(current) : return False
             if new[0] > len(self.coordinates) : return False
             if new[1] > len(self.coordinates[0]) : return False
             return True
-            
+            n
         if validmove():
             self.coordinates[new[0]][new[1]] = self.point(current)
             self.coordinates[current[0]][current[1]] = None
@@ -83,15 +92,18 @@ class Board:
             raise InvalidMove('Invalid move. No peice, or out of bounds')
 
     def occupied(self):
+        """return a list of occupied spaces"""
         s = [(i,j) for i in range(10) for j in range(9)]
         return [p for p in s if self.point(p)]
 
     def side(self,color):
+        """return all the spots occupied by a specific side"""
         s = [(i,j) for i in range(10) for j in range(9)]
         return [p for p in s if self.point(p) if self.point(p).color is color]
 
 
     def availiblemoves(self,location):
+        """return the possible moves for a piece by location"""
         return self.point(location).possiblemoves(location,self)
         
 
@@ -105,11 +117,5 @@ if __name__ == "__main__" :
     print(b)
     mypiece = b.point((6,8))
     
-    print(mypiece)
-    print(b.occupied())
-    print(b.side('b'))
-#    print(b.availiblemoves((6,8)))
-    print(b.availiblemoves((0,0)))
- 
     for p in b.occupied():
         print(b.point(p),b.availiblemoves(p))

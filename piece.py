@@ -1,71 +1,62 @@
 class Piece:
-
-    character = {("g","w"): "將"}
-    character[("a","w")] = "仕"
-    character[("e","w")] = "相"
-    character[("h","w")] = "馬"
-    character[("r","w")] = "俥"
-    character[("c","w")] = "炮"
-    character[("p","w")] = "兵"
-
-    character[("g","b")] = "帥"
-    character[("a","b")] = "士"
-    character[("e","b")] = "象"
-    character[("h","b")] = "馬"
-    character[("r","b")] = "車"
-    character[("c","b")] = "砲"
-    character[("p","b")] = "卒"
-
-    "represents a playable peice on the board"
+    """represents a playable chess peice, with shared properties of all pieces"""
     def __init__(self,color="w"):
         self.color = color
 
     def possiblemoves(self,location,board):
+        """Return the places a piece can move"""
         return []
 #        return [(i,j) for i in range(10) for j in range(9)]
 
     def onboard(self,move):
+        """Retrun the moves that are on the board"""
         if 0 <= move[0] <= 9 and 0 <= move[1] <= 8 : return True
         return False
 
     def inpalace(self,move):
+        """Return the points that are in the palace"""
         black = [(i,j) for j in range(3,6) for i in range(0,4)]
         white = [(i,j) for j in range(3,6) for i in range(8,10)]
         if move in black or move in white: return True
         return False
 
-    
     def south(self, location):
+        """A generator of moves in the southern direction"""
         i,j = location
         while i < 9:
             i +=1
             yield (i,j)
 
     def north(self, location):
+        """A generator of moves in the northern direction"""
         i,j = location
         while i >= 0:
             i -=1
             yield (i,j)
 
     def east(self, location):
+        """A generator of moves in the eastern direction"""
         i,j = location
         while j >= 0:
             j -=1
             yield (i,j)
 
     def west(self, location):
+        """A generator of moves in the western direction"""
         i,j = location
         while j < 8:
             j +=1
             yield (i,j)
 
     def enemey(self, otherpiece):
+        """Retrun true if the peice is an enemy"""
         if otherpiece:
             if self.color != otherpiece.color:
                 return True
         return False
 
     def friendly(self, otherpiece):
+        """Return true if a peice is friendly"""
         if otherpiece:
             if self.color == otherpiece.color:
                 return True
@@ -73,16 +64,20 @@ class Piece:
 
 
 class Pawn(Piece):
+    """Pawn piece"""
     def __init__(self,color="w"):
         self.color = color
 
     def __repr__(self):
+        """Print a pawn"""
         if self.color == "b":
             return "卒"
         else:
             return "兵"
         
     def possiblemoves(self,location,board):
+        """return the moves for a pawn, forward for either black or white
+        sideways after crossing the river"""
         if self.color == "b":
             moves = [(location[0]-1,location[1])]
             if location[0] < 5:
@@ -96,16 +91,20 @@ class Pawn(Piece):
         return moves
 
 class Cannon(Piece):
+    """Cannon piece"""
     def __init__(self,color="w"):
         self.color = color
 
     def __repr__(self):
+        """Print the cannon"""
         if self.color == "b":
             return "砲"
         else:
             return "炮"
     def possiblemoves(self,location,board):
-        def rookmoves(board,directiongenerator):
+        """The squares the cannon can move to"""
+        def cannonmoves(board,directiongenerator):
+            """The odd jumping capture of a cannon"""
             jumping = False
             moves = []
             row,column = location
@@ -124,17 +123,17 @@ class Cannon(Piece):
             return moves
 
         moves = []
-        moves.extend(rookmoves(board,self.north(location)))
-        moves.extend(rookmoves(board,self.south(location)))
-        moves.extend(rookmoves(board,self.east(location)))
-        moves.extend(rookmoves(board,self.west(location)))
+        moves.extend(cannonmoves(board,self.north(location)))
+        moves.extend(cannonmoves(board,self.south(location)))
+        moves.extend(cannonmoves(board,self.east(location)))
+        moves.extend(cannonmoves(board,self.west(location)))
         return list(filter(self.onboard,moves))
 
-
 class Rook(Piece):
+    """rook piece"""
     def __init__(self,color="w"):
         self.color = color
-
+        
     def __repr__(self):
         if self.color == "b":
             return "車"
