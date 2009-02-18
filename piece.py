@@ -141,7 +141,9 @@ class Rook(Piece):
             return "俥"
 
     def possiblemoves(self,location,board):
+        """The squares rook can move to"""
         def rookmoves(board,directiongenerator):
+            """Line of moves till hitting a peice"""
             moves = []
             row,column = location
             for spot in directiongenerator:
@@ -164,6 +166,7 @@ class Rook(Piece):
         return list(filter(self.onboard,moves))
 
 class Horse(Piece):
+    """The horse piece, like a knight"""
     def __init__(self,color="w"):
         self.color = color
 
@@ -174,6 +177,7 @@ class Horse(Piece):
             return "馬"
 
     def possiblemoves(self,location,board):
+        """Return the points a horse can move to"""
         moves =[]
         i,j = location
             #north
@@ -188,6 +192,7 @@ class Horse(Piece):
         return list(filter(self.onboard,moves))
 
 class Elephant(Piece):
+    """Elephant piece"""
     def __init__(self,color="w"):
         self.color = color
 
@@ -197,7 +202,9 @@ class Elephant(Piece):
         else:
             return "相"
     def possiblemoves(self,location,board):
+        """Return the points an elephant can move to"""
         def thissideoftheriver(location):
+            """Return if a spot is on our side of the river"""
             if self.color == "w" and location[0] < 5:
                 return True
             if self.color == "b" and location[0] > 4:
@@ -210,6 +217,7 @@ class Elephant(Piece):
 
 
 class Advisor(Piece):
+    """The palace advisor peice"""
     def __init__(self,color="w"):
         self.color = color
 
@@ -220,12 +228,14 @@ class Advisor(Piece):
             return "仕"
 
     def possiblemoves(self,location,board):
+        """Can move diagonaly within the palace"""
         i,j = location
         moves = [(i+1,j+1),(i+1,j-1),(i-1,j-1),(i-1,j+1)]
         return list(filter(self.inpalace,moves))
 
 
 class General(Piece):
+    """General Piece, like the king"""
     def __init__(self,color="w"):
         self.color = color
 
@@ -236,6 +246,7 @@ class General(Piece):
             return "將"
         
     def possiblemoves(self,location,board):
+        """Can move n/s/e/w within the palace"""
         def kingmoves(directiongenerator):
             try:
                 candidatemove = next(directiongenerator)
@@ -250,6 +261,6 @@ class General(Piece):
         moves.extend(kingmoves(self.south(location)))
         moves.extend(kingmoves(self.east(location)))
         moves.extend(kingmoves(self.west(location)))
-        return list(moves)
-#        return list(filter(self.inpalace,moves))
+#        return list(moves)
+        return list(filter(self.inpalace,moves))
 
