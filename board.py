@@ -101,11 +101,27 @@ class Board:
         s = [(i,j) for i in range(10) for j in range(9)]
         return [p for p in s if self.point(p) if self.point(p).color is color]
 
+    def findgeneral(self,color):
+        """Returns the posistion of the general for a side"""
+        def isgeneral(x):
+            return isinstance(self.point(x),General)
+        return next(filter(isgeneral,self.side(color)))
 
     def availiblemoves(self,location):
         """return the possible moves for a piece by location"""
         return self.point(location).possiblemoves(location,self)
-        
+
+    def check(self,color):
+        """Returns true if the given sides king is in check"""
+        general = self.findgeneral(color)
+        if color == "b": enemycolor = "w"
+        if color == "w": enemycolor = "b"
+        for opponent in self.side(enemycolor):
+            if general in self.availiblemoves(opponent):
+                return True
+        return False
+
+    
 
 if __name__ == "__main__" :
     b = Board()
@@ -119,3 +135,7 @@ if __name__ == "__main__" :
     
     for p in b.occupied():
         print(b.point(p),b.availiblemoves(p))
+        
+    
+    print(b.check("b"))
+    b.check("w")
