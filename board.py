@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.0
 from piece import *
+import copy
 
 class InvalidMove(Exception): pass
 
@@ -84,7 +85,6 @@ class Board:
             if new[0] > len(self.coordinates) : return False
             if new[1] > len(self.coordinates[0]) : return False
             return True
-            n
         if validmove():
             self.coordinates[new[0]][new[1]] = self.point(current)
             self.coordinates[current[0]][current[1]] = None
@@ -121,6 +121,18 @@ class Board:
                 return True
         return False
 
+    def checkmate(self,color):
+        """If in check, make every possible move to see if we can get out of check"""
+        if not self.check:
+            return False
+        for piece in self.side(color):
+            for possiblemove in self.availiblemoves(piece):
+                testboard = copy.deepcopy(self)
+                testboard.move(piece,possiblemove)
+#                print(testboard) # for debugging
+                if not testboard.check(color):
+                    return False
+        return True
     
 
 if __name__ == "__main__" :
@@ -138,4 +150,4 @@ if __name__ == "__main__" :
         
     
     print(b.check("b"))
-    b.check("w")
+    print(b.checkmate("w"))
