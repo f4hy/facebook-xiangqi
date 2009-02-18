@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.0
 from piece import *
+import copy
 
 class InvalidMove(Exception): pass
 
@@ -84,7 +85,6 @@ class Board:
             if new[0] > len(self.coordinates) : return False
             if new[1] > len(self.coordinates[0]) : return False
             return True
-            n
         if validmove():
             self.coordinates[new[0]][new[1]] = self.point(current)
             self.coordinates[current[0]][current[1]] = None
@@ -101,11 +101,39 @@ class Board:
         s = [(i,j) for i in range(10) for j in range(9)]
         return [p for p in s if self.point(p) if self.point(p).color is color]
 
+    def findgeneral(self,color):
+        """Returns the posistion of the general for a side"""
+        def isgeneral(x):
+            return isinstance(self.point(x),General)
+        return next(filter(isgeneral,self.side(color)))
 
     def availiblemoves(self,location):
         """return the possible moves for a piece by location"""
         return self.point(location).possiblemoves(location,self)
-        
+
+    def check(self,color):
+        """Returns true if the given sides king is in check"""
+        general = self.findgeneral(color)
+        if color == "b": enemycolor = "w"
+        if color == "w": enemycolor = "b"
+        for opponent in self.side(enemycolor):
+            if general in self.availiblemoves(opponent):
+                return True
+        return False
+
+    def checkmate(self,color):
+        """If in check, make every possible move to see if we can get out of check"""
+        if not self.check:
+            return False
+        for piece in self.side(color):
+            for possiblemove in self.availiblemoves(piece):
+                testboard = copy.deepcopy(self)
+                testboard.move(piece,possiblemove)
+#                print(testboard) # for debugging
+                if not testboard.check(color):
+                    return False
+        return True
+    
 
 if __name__ == "__main__" :
     b = Board()
@@ -119,3 +147,7 @@ if __name__ == "__main__" :
     
     for p in b.occupied():
         print(b.point(p),b.availiblemoves(p))
+        
+    
+    print(b.check("b"))
+    print(b.checkmate("w"))
