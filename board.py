@@ -136,6 +136,7 @@ class Board:
     
 
 if __name__ == "__main__" :
+    """If running the board the directry run some tests"""
     b = Board()
     b.newgameboard()
     try: 
@@ -148,6 +149,6 @@ if __name__ == "__main__" :
     for p in b.occupied():
         print(b.point(p),b.availiblemoves(p))
         
-    
     print(b.check("b"))
     print(b.checkmate("w"))
+    print(b)
