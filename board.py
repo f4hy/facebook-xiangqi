@@ -111,6 +111,20 @@ class Board:
         """return the possible moves for a piece by location"""
         return self.point(location).possiblemoves(location,self)
 
+    def allsidelegalmoves(self,color):
+        moves = {}
+
+        def legalmove(current,new):
+            testboard = copy.deepcopy(self)
+            testboard.move(current,new)
+            if not testboard.check(color):
+                return False
+
+        for piece in self.side(color):
+            moves[piece] = self.availiblemoves(piece)
+
+        return moves
+
     def check(self,color):
         """Returns true if the given sides king is in check"""
         general = self.findgeneral(color)
@@ -123,7 +137,7 @@ class Board:
 
     def checkmate(self,color):
         """If in check, make every possible move to see if we can get out of check"""
-        if not self.check:
+        if not self.check(color):
             return False
         for piece in self.side(color):
             for possiblemove in self.availiblemoves(piece):
@@ -152,3 +166,4 @@ if __name__ == "__main__" :
     print(b.check("b"))
     print(b.checkmate("w"))
     print(b)
+    print(b.allsidelegalmoves("b"))
