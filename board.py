@@ -112,16 +112,22 @@ class Board:
         return self.point(location).possiblemoves(location,self)
 
     def allsidelegalmoves(self,color):
+        """Returns a dictionary of all the legal moves for a side"""
         moves = {}
 
         def legalmove(current,new):
             testboard = copy.deepcopy(self)
             testboard.move(current,new)
-            if not testboard.check(color):
+            if testboard.check(color):
                 return False
+            return True
 
         for piece in self.side(color):
-            moves[piece] = self.availiblemoves(piece)
+            piecemoves = self.availiblemoves(piece)
+            for candidatemove in piecemoves:
+                if not legalmove(piece,candidatemove):
+                    piecemoves.remove(candidatemove)
+            moves[piece] = piecemoves
 
         return moves
 
@@ -132,6 +138,7 @@ class Board:
         if color == "w": enemycolor = "b"
         for opponent in self.side(enemycolor):
             if general in self.availiblemoves(opponent):
+                print("Check")
                 return True
         return False
 
@@ -139,8 +146,9 @@ class Board:
         """If in check, make every possible move to see if we can get out of check"""
         if not self.check(color):
             return False
-        for piece in self.side(color):
-            for possiblemove in self.availiblemoves(piece):
+        moves = allsidelegalmoves(color)
+        for piece in moves:
+            for possiblemove in moves[piece]:
                 testboard = copy.deepcopy(self)
                 testboard.move(piece,possiblemove)
 #                print(testboard) # for debugging
@@ -165,5 +173,4 @@ if __name__ == "__main__" :
         
     print(b.check("b"))
     print(b.checkmate("w"))
-    print(b)
     print(b.allsidelegalmoves("b"))
