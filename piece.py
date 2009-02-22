@@ -230,7 +230,10 @@ class Advisor(Piece):
     def possiblemoves(self,location,board):
         """Can move diagonaly within the palace"""
         i,j = location
-        moves = [(i+1,j+1),(i+1,j-1),(i-1,j-1),(i-1,j+1)]
+        moves = []
+        for x in [(i+1,j+1),(i+1,j-1),(i-1,j-1),(i-1,j+1)]:
+            if not self.friendly(board.point(x)):
+                moves.append(x)
         return list(filter(self.inpalace,moves))
 
 
