@@ -83,13 +83,18 @@ class Pawn(Piece):
         if self.color == "b":
             moves = [(location[0]-1,location[1])]
             if location[0] < 5:
-                moves.append( (location[0]-1,location[1]+1) )
-                moves.append( (location[0]-1,location[1]-1) )
+                moves.append( (location[0],location[1]+1) )
+                moves.append( (location[0],location[1]-1) )
         else:
             moves = [(location[0]+1,location[1])]
             if location[0] > 4:
-                moves.append( (location[0]+1,location[1]+1) )
-                moves.append( (location[0]+1,location[1]-1) )
+                moves.append( (location[0],location[1]+1) )
+                moves.append( (location[0],location[1]-1) )
+
+        def friendlypiece(candidatemove):
+            return not self.friendly(board.point(candidatemove))
+
+        moves = list(filter(friendlypiece,moves))
         return list(filter(self.onboard,moves))
 
 class Cannon(Piece):
