@@ -63,6 +63,8 @@ class Piece:
         return False
 
 
+
+
 class Pawn(Piece):
     """Pawn piece"""
     def __init__(self,color="w"):
@@ -189,7 +191,13 @@ class Horse(Piece):
             moves.extend( [(i-1,j-2),(i+1,j-2)] )
         if not board.point((i,j+1)):
             moves.extend( [(i-1,j+2),(i+1,j+2)] )
-        return list(filter(self.onboard,moves))
+
+        def friendlypiece(candidatemove):
+            return not self.friendly(board.point(candidatemove))
+        moves = list(filter(self.onboard,moves))
+        moves = list(filter(friendlypiece,moves))
+        
+        return moves
 
 class Elephant(Piece):
     """Elephant piece"""

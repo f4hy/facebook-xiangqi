@@ -146,7 +146,7 @@ class Board:
         """If in check, make every possible move to see if we can get out of check"""
         if not self.check(color):
             return False
-        moves = allsidelegalmoves(color)
+        moves = self.allsidelegalmoves(color)
         for piece in moves:
             for possiblemove in moves[piece]:
                 testboard = copy.deepcopy(self)

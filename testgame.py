@@ -36,6 +36,9 @@ def makerandommove():
         b.move(mypiece,mymove)
     else: print("pass")
     print(b)
+    if(b.checkmate(next(turn))):
+        print("checkmate!")
+        quit()
 
-for x in range(30):
+for x in range(70):
     makerandommove()
