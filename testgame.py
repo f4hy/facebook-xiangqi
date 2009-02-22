@@ -25,17 +25,25 @@ if []:
     print()
 
 def makerandommove():
-    
-    mymoves = b.allsidelegalmoves(next(turn))
+
+    t = next(turn)
+    mymoves = b.allsidelegalmoves(t)
     if not mymoves:
         print(mymoves)
-    mypiece = random.choice(list(mymoves))
+    mypiece = None
+    while not mypiece:
+        mypiece = random.choice(list(mymoves))
     if mymoves[mypiece]:
         mymove = random.choice(mymoves[mypiece])
         print(b.point(mypiece),mymove)
         b.move(mypiece,mymove)
     else: print("pass")
+    if b.checkmate(t):
+        print("checkmate!")
+        quit()
     print(b)
 
-for x in range(70):
+for x in range(300):
     makerandommove()
+
+print(b)
