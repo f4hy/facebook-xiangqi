@@ -21,13 +21,20 @@ print(next(turn))
 print(next(turn))
 print(next(turn))
 
+if []:
+    print()
+
 def makerandommove():
     
     mymoves = b.allsidelegalmoves(next(turn))
+    if not mymoves:
+        print(mymoves)
     mypiece = random.choice(list(mymoves))
-    mymove = random.choice(mymoves[mypiece])
-    print(b.point(mypiece),mymove)
-    b.move(mypiece,mymove)
+    if mymoves[mypiece]:
+        mymove = random.choice(mymoves[mypiece])
+        print(b.point(mypiece),mymove)
+        b.move(mypiece,mymove)
+    else: print("pass")
     print(b)
 
 for x in range(30):

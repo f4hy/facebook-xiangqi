@@ -88,7 +88,7 @@ class Pawn(Piece):
             if location[0] > 4:
                 moves.append( (location[0]+1,location[1]+1) )
                 moves.append( (location[0]+1,location[1]-1) )
-        return moves
+        return list(filter(self.onboard,moves))
 
 class Cannon(Piece):
     """Cannon piece"""
