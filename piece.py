@@ -15,8 +15,8 @@ class Piece:
 
     def inpalace(self,move):
         """Return the points that are in the palace"""
-        black = [(i,j) for j in range(3,6) for i in range(0,4)]
-        white = [(i,j) for j in range(3,6) for i in range(8,10)]
+        black = [(i,j) for j in range(3,6) for i in range(0,3)]
+        white = [(i,j) for j in range(3,6) for i in range(7,10)]
         if move in black or move in white: return True
         return False
 
@@ -225,7 +225,15 @@ class Elephant(Piece):
             return False
         i,j = location
         moves = [(i+2,j+2),(i+2,j-2),(i-2,j-2),(i-2,j+2)]
+
+        def friendlypiece(candidatemove):
+            return not self.friendly(board.point(candidatemove))
+        moves = list(filter(friendlypiece,moves))
+
         moves = filter(thissideoftheriver,moves)
+
+
+
         return list(filter(self.onboard,moves))
 
 
