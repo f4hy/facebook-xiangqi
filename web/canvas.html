@@ -1,0 +1,86 @@
+<html>
+<head>
+
+<script>
+function load()
+{
+	canvas = document.getElementById('canvas');
+}
+function miniPopup(obj, evnt, show) 
+{
+
+	if (show == 2) {
+		document.onmousemove=function(e) {miniPopup(obj, e||event, 1)}
+	}
+	if (!show) {
+		document.onmousemove=function(){}
+		return;
+	}
+
+	var x = evnt.clientX - obj.offsetLeft;
+	var y = evnt.clientY - obj.offsetTop;
+	var middle = 100;
+	var cord_x = x - middle;
+	var cord_y = middle - y;
+
+	var c_red = 0;
+	var c_green = 0;
+	var c_blue = 0;
+
+	var angle = Math.atan2(cord_x, cord_y)*180/Math.PI;
+
+	c_red = get_color(angle, 0);
+	c_green = get_color(angle, 120);
+	c_blue = get_color(angle, -120);
+
+	var to_center_dis = Math.sqrt(cord_x*cord_x + cord_y*cord_y);
+	if (to_center_dis <= 50)
+	{
+		var color_addition = Math.floor(255 * (50 - to_center_dis)/50);
+		c_red = (c_red + color_addition) > 255 ? 255 : c_red + color_addition;
+		c_green = (c_green + color_addition) > 255 ? 255 : c_green + color_addition;
+		c_blue = (c_blue + color_addition) > 255 ? 255 : c_blue + color_addition;
+	}
+
+	if (canvas.getContext)
+	{
+		var ctx = canvas.getContext("2d");
+
+		ctx.fillStyle = 'rgb('+c_red+', '+c_green+', '+c_blue+')';
+		ctx.fillRect (x, y, 5, 5);
+	}
+
+}
+
+function get_color(angle, shift)
+{
+	angle += shift;
+	if (angle > 180)
+		angle -= 360;
+	else if (angle < -180)
+		angle += 360;
+
+	if (angle >= -60 && angle <= 60)
+		return 255;
+	else if (angle >= 120 || angle <= -120)
+		return 0;
+
+	return Math.floor( (120 - Math.abs(angle)) / 60 * 255 );
+}
+</script>
+
+</head>
+<body onload="load();">
+
+<style> div#cdiv { border: 1px dotted #bbb; width: 200px; }</style>
+
+<div id="cdiv">
+   <canvas id="canvas" width="200" height="200" onmouseout="miniPopup(this,event,0);" onmouseover="miniPopup(this,event,2);">
+     <p>This example requires a browser that supports the
+     <a href="http://www.w3.org/html/wg/html5/">HTML5</a>
+     &lt;canvas&gt; feature.</p>
+   </canvas>
+</div>
+
+</body>
+</html>
