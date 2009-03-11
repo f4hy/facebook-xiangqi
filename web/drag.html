@@ -8,20 +8,16 @@
     <script type="text/javascript" src="jquery/jquery-ui-1.7.custom.min.js"></script>
     <script type="text/javascript" src="js/game.js"></script>    
     <style type="text/css">
-      .draggable { width: 70px; height: 70px;  }
-      #droppable { position: absolute; left: 250px; top: 0; width: 125px; height: 75px; background: gray; color: white; padding: 10px; }
-      #board {background: grey;  width:600px; height: 600px;}
-      .square { width: 70px; height: 70px;  background: white; position:relative;}
+      .draggable { width: 70px; height: 70px; z-index:3; cursor: move; }
+      #droppable { position: absolute; left: 250px; top: 0; width: 125px; height: 75px; background: green; color: white; padding: 10px; }
+      .droppable { background: yellow; color: white; }
+      #board {background: grey;  left: 50px; top: 50px; width:700px; height: 630px; position:relative; background: 'images/grid.png' }
+      .square { width: 70px; height: 70px; position:absolute;}
     </style>
     <title></title>
   </head>
   <body >
     <noscript>This page requires javascript. Your browser appears to have javascript disabled</noscript>
-    <div id="droppable" class="droppable">Drop here</div>
-    <div id="general" class="draggable">
-      <img src="images/general.png" alt="genreal" />
-    </div>
-
     <div id="board"> </div>
     
 </body>
