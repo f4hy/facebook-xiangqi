@@ -181,7 +181,7 @@ class Horse(Piece):
         if self.color == "b":
             return "馬"
         else:
-            return "馬"
+            return "傌"
 
     def possiblemoves(self,location,board):
         """Return the points a horse can move to"""
