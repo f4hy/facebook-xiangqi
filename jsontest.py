@@ -2,15 +2,23 @@
 import json
 from board import *
 
+def jsonmoves(board,side):
+    return json.dumps(dict([("%d:%d" % k, v) for k, v in board.allsidelegalmoves(side).items()]))
+
+def jsonstate(board):
+    return json.dumps(dict([("%d:%d" % k, str(v)) for k, v in board.state().items()]))
+    
+
+
 b = Board()
 b.newgameboard()
-#print(b)
-print(b.allsidelegalmoves("w"))
-print(b.allsidelegalmoves("w").items())
 
-print("json")
-print(json.dumps(dict([("%d,%d" % k, v) for k, v in b.allsidelegalmoves("w").items()])))
+# print(b.side("w"))
+# print(b.state())
 
+print("帥")
 
-#print(json.JSONEncoder().encode(b.allsidelegalmoves("w")))
-
+print(jsonmoves(b,"w"))
+print("-----")
+print(b.state())
+print(jsonstate(b))
