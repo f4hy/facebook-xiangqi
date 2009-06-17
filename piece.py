@@ -265,9 +265,9 @@ class General(Piece):
 
     def __repr__(self):
         if self.color == "b":
-            return "帥"
-        else:
             return "將"
+        else:
+            return "帥"
         
     def possiblemoves(self,location,board):
         """Can move n/s/e/w within the palace"""
