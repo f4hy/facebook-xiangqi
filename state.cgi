@@ -1,5 +1,7 @@
 #!/usr/bin/env python3.0
 import json
+import cgi
+import pickle
 from board import *
 
 def jsonmoves(board,side):
@@ -17,4 +19,18 @@ b.newgameboard()
 # print("<TITLE>CGI script output</TITLE>")
 # print("<H1>This is my first CGI script</H1>")
 # print("Hello, world!")
-print("'{positions:" + jsonstate(b) + ", moves:"+ jsonmoves(b,"w")+"}'")
+
+
+form = cgi.FieldStorage()
+turn = form.getvalue("turn","w")
+
+if (turn == "b"):               # WTF! why is this needed!
+    turn = "b"
+else:
+    turn = "w"
+
+print("'{positions:" + jsonstate(b) + ", moves:"+ jsonmoves(b,turn)+"}'")
+
+myfile = open("testfile","wb")
+pickle.dump(b,myfile)
+myfile.close()
