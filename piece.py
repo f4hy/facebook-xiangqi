@@ -15,8 +15,8 @@ class Piece:
 
     def inpalace(self,move):
         """Return the points that are in the palace"""
-        black = [(i,j) for j in range(3,6) for i in range(0,4)]
-        white = [(i,j) for j in range(3,6) for i in range(8,10)]
+        black = [(i,j) for j in range(3,6) for i in range(0,3)]
+        white = [(i,j) for j in range(3,6) for i in range(7,10)]
         if move in black or move in white: return True
         return False
 
@@ -63,6 +63,8 @@ class Piece:
         return False
 
 
+
+
 class Pawn(Piece):
     """Pawn piece"""
     def __init__(self,color="w"):
@@ -81,14 +83,19 @@ class Pawn(Piece):
         if self.color == "b":
             moves = [(location[0]-1,location[1])]
             if location[0] < 5:
-                moves.append( (location[0]-1,location[1]+1) )
-                moves.append( (location[0]-1,location[1]-1) )
+                moves.append( (location[0],location[1]+1) )
+                moves.append( (location[0],location[1]-1) )
         else:
             moves = [(location[0]+1,location[1])]
             if location[0] > 4:
-                moves.append( (location[0]+1,location[1]+1) )
-                moves.append( (location[0]+1,location[1]-1) )
-        return moves
+                moves.append( (location[0],location[1]+1) )
+                moves.append( (location[0],location[1]-1) )
+
+        def friendlypiece(candidatemove):
+            return not self.friendly(board.point(candidatemove))
+
+        moves = list(filter(friendlypiece,moves))
+        return list(filter(self.onboard,moves))
 
 class Cannon(Piece):
     """Cannon piece"""
@@ -174,7 +181,7 @@ class Horse(Piece):
         if self.color == "b":
             return "馬"
         else:
-            return "馬"
+            return "傌"
 
     def possiblemoves(self,location,board):
         """Return the points a horse can move to"""
@@ -189,7 +196,13 @@ class Horse(Piece):
             moves.extend( [(i-1,j-2),(i+1,j-2)] )
         if not board.point((i,j+1)):
             moves.extend( [(i-1,j+2),(i+1,j+2)] )
-        return list(filter(self.onboard,moves))
+
+        def friendlypiece(candidatemove):
+            return not self.friendly(board.point(candidatemove))
+        moves = list(filter(self.onboard,moves))
+        moves = list(filter(friendlypiece,moves))
+        
+        return moves
 
 class Elephant(Piece):
     """Elephant piece"""
@@ -212,7 +225,15 @@ class Elephant(Piece):
             return False
         i,j = location
         moves = [(i+2,j+2),(i+2,j-2),(i-2,j-2),(i-2,j+2)]
+
+        def friendlypiece(candidatemove):
+            return not self.friendly(board.point(candidatemove))
+        moves = list(filter(friendlypiece,moves))
+
         moves = filter(thissideoftheriver,moves)
+
+
+
         return list(filter(self.onboard,moves))
 
 
@@ -230,7 +251,10 @@ class Advisor(Piece):
     def possiblemoves(self,location,board):
         """Can move diagonaly within the palace"""
         i,j = location
-        moves = [(i+1,j+1),(i+1,j-1),(i-1,j-1),(i-1,j+1)]
+        moves = []
+        for x in [(i+1,j+1),(i+1,j-1),(i-1,j-1),(i-1,j+1)]:
+            if not self.friendly(board.point(x)):
+                moves.append(x)
         return list(filter(self.inpalace,moves))
 
 
@@ -241,9 +265,9 @@ class General(Piece):
 
     def __repr__(self):
         if self.color == "b":
-            return "帥"
-        else:
             return "將"
+        else:
+            return "帥"
         
     def possiblemoves(self,location,board):
         """Can move n/s/e/w within the palace"""

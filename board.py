@@ -101,6 +101,15 @@ class Board:
         s = [(i,j) for i in range(10) for j in range(9)]
         return [p for p in s if self.point(p) if self.point(p).color is color]
 
+    def state(self):
+        """Return the state of the board"""
+        occ = self.occupied()
+        s = {}
+        for p in occ:
+            s[p] = self.point(p)
+        return s
+        
+
     def findgeneral(self,color):
         """Returns the posistion of the general for a side"""
         def isgeneral(x):
@@ -146,7 +155,7 @@ class Board:
         """If in check, make every possible move to see if we can get out of check"""
         if not self.check(color):
             return False
-        moves = allsidelegalmoves(color)
+        moves = self.allsidelegalmoves(color)
         for piece in moves:
             for possiblemove in moves[piece]:
                 testboard = copy.deepcopy(self)

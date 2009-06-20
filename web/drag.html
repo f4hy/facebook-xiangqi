@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+      .draggable { width: 70px; height: 70px; z-index:3; cursor: move; }
+      #droppable { position: absolute; left: 250px; top: 0; width: 125px; height: 75px; background: green; color: white; padding: 10px; }
+      .droppable { background: yellow; color: white; }
+      #board {background: grey;  left: 50px; top: 50px; width:630px; height: 700px; position:relative; background: 'images/grid.png' }
+      .square { width: 70px; height: 70px; position:absolute;}
+    </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/game.js"></script>    
+    <script type="text/javascript" src="js/json.js"></script>    
+    <title></title>
+  </head>
+  <body >
+    <noscript>This page requires javascript. Your browser appears to have javascript disabled</noscript>
+    <div id="board"> </div>
+    
+</body>
+</html>
