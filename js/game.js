@@ -5,6 +5,7 @@
 $(document).ready(function () {
 
     var moves;    
+    var id;
     
     function getSquare(x, y) {
 	return $("#square" + x + "" + y);
@@ -12,7 +13,7 @@ $(document).ready(function () {
     
     function addPiece(type, color, x, y) {
 	var div = '<div class="piece">' + '<img src="images/' + type + '.png" alt="' + type + '"/>' + '</div>';
-	getSquare(x,y).append($(div));
+	getSquare(x,y).append($(div).data("x",x).data("y",y));
     }
 
     function draginit() {
@@ -36,30 +37,34 @@ $(document).ready(function () {
 		    getSquare(selectedMoves[i][0],selectedMoves[i][1]).droppable('enable');
 	    }
 
-	    if( $(this).hasClass('rook') ) {
-		$(".square").droppable('disable');
-		getSquare(1,2).droppable('enable');
-	    }
 	});
 
 	$(".droppable").droppable( {
 	    drop: function(event, ui) { $(this).css({background:"red"}); 
-					$(this).empty();
-					$(this).append(ui.draggable);
-					ui.draggable.css({left:"0px"}); 
+					// Used to snap the draged item in
+					$(this).empty(); // clear the contents
+					$(this).append(ui.draggable); // append the draged item
+					ui.draggable.css({left:"0px"}); // position it correctly
 					ui.draggable.css({top:"0px"}); 
+
+					$.post("move.cgi", {to: [$(this).data("x") , $(this).data("y") ] , from: [ui.draggable.data("x") , ui.draggable.data("y") ] , gameid: id} );
+					$.getJSON("state.cgi?gameid="+id, setboard );
 				      }
 	});
     }
 
 
     function setboard(json) {
-	var boardState = eval('(' + json + ')');
-	var pieces = boardState.positions;
+	var boardState = json;
+	var pieces = boardState.positions;	
 	moves = boardState.moves;
+	id = boardState.id;
+	$("body").append("" + id + "\n");
+	$(".piece").remove();
 	for (var x in pieces) {
 	    addPiece(pieces[x] ,"", x[0], x[2]);
 	}
+	$(".droppable").css({background:"yellow"});
 	draginit();
     }
 
@@ -67,7 +72,7 @@ $(document).ready(function () {
     for(var i=0; i < 10; i += 1) {
 	for(var j = 0; j < 9; j += 1) {
 	    var div = "<div id=square" + i + "" + j + " class='square'></div>";
-	    $(div).appendTo(board).css("left",(70*j)+"px").css("top",(70*i)+"px");
+	    $(div).appendTo(board).css("left",(70*j)+"px").css("top",(70*i)+"px").data("x",i).data("y",j);
 	    
 	}
     }
@@ -75,9 +80,9 @@ $(document).ready(function () {
     // $("body").append(myMoves);
     // test();
     // $("body").append("test");
-    // $("body").append(seven);
+    
 
-    $.getJSON("state.cgi?turn=b", setboard );
+    $.getJSON("state.cgi", setboard );
     
 });
     

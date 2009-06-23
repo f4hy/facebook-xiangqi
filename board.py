@@ -111,7 +111,7 @@ class Board:
     def side(self,color):
         """return all the spots occupied by a specific side"""
         s = [(i,j) for i in range(10) for j in range(9)]
-        return [p for p in s if self.point(p) if self.point(p).color is color]
+        return [p for p in s if self.point(p) if self.point(p).color == color]
 
 
     def state(self):

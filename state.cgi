@@ -21,7 +21,7 @@ print("Content-Type: text/plain\n")
     
 form = cgi.FieldStorage()       # get fields pased by url (get?)
 
-gameid = form.getvalue("id",None)
+gameid = form.getvalue("gameid",None)
 
 filename = None
 
@@ -29,8 +29,8 @@ if not gameid:
     gameid = str(int(uuid.uuid4()))
     b = Board()
 else:
-    readfile = open("games/" + gameid,"rb")
-    pickle.load(readflie)
+    readfile = open("games/" + str(gameid),"rb")
+    b =  pickle.load(readfile)
     readfile.close()
     #b = Board()
 
@@ -42,7 +42,7 @@ else:
 # else:
 #     turn = "w"
 
-print("'{positions:" + jsonstate(b) + ", moves:"+ jsonmoves(b)+"}'")
+print('{"positions":' + jsonstate(b) + ', "moves":'+ jsonmoves(b)+', "id":' + json.dumps(gameid) + "}")
 
 writefile = open("games/" + gameid,"wb")
 pickle.dump(b,writefile)
