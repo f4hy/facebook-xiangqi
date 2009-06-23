@@ -16,9 +16,12 @@ class Board:
     pawn = "卒"
 
 
+
     def __init__(self,coordinates=None):
         """set up the boards coordinates for pieces"""
         self.coordinates = [[None for i in range(9)] for j in range(10)]
+#        self.turn = "w"
+        self.newgameboard()
 
     def __repr__(self):
         """Print out the state of the board"""
@@ -35,6 +38,12 @@ class Board:
                     s+="  "
             s+="\n"
         return s
+
+    def nextturn(self):
+        if self.turn == "w":
+            self.turn = "b"
+        else:
+            self.turn = "w"
     
     def newgameboard(self):
         """Set the board to the start of a new game"""
@@ -71,12 +80,14 @@ class Board:
         self.coordinates[7][1] = Cannon("b")
         self.coordinates[7][7] = Cannon("b")
 
+        self.turn = "w"
+
     def point(self,index):
         """Return the piece on a point, or return none"""
         if 0 <= index[0] <= 9 and 0 <= index[1] <= 8 :
             return self.coordinates[index[0]][index[1]]
         return None
-            
+    
 
     def move(self,current,new):
         """Move a piece from one spot to annother"""
@@ -88,6 +99,7 @@ class Board:
         if validmove():
             self.coordinates[new[0]][new[1]] = self.point(current)
             self.coordinates[current[0]][current[1]] = None
+            self.nextturn()
         else:
             raise InvalidMove('Invalid move. No peice, or out of bounds')
 
@@ -99,7 +111,8 @@ class Board:
     def side(self,color):
         """return all the spots occupied by a specific side"""
         s = [(i,j) for i in range(10) for j in range(9)]
-        return [p for p in s if self.point(p) if self.point(p).color is color]
+        return [p for p in s if self.point(p) if self.point(p).color == color]
+
 
     def state(self):
         """Return the state of the board"""
@@ -108,7 +121,6 @@ class Board:
         for p in occ:
             s[p] = self.point(p)
         return s
-        
 
     def findgeneral(self,color):
         """Returns the posistion of the general for a side"""
@@ -139,6 +151,9 @@ class Board:
             moves[piece] = piecemoves
 
         return moves
+
+    def allturnlegalmoves(self):
+        return self.allsidelegalmoves(self.turn)
 
     def check(self,color):
         """Returns true if the given sides king is in check"""
@@ -183,3 +198,4 @@ if __name__ == "__main__" :
     print(b.check("b"))
     print(b.checkmate("w"))
     print(b.allsidelegalmoves("b"))
+

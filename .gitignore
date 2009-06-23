@@ -1,3 +1,6 @@
 *.pyc
 *.py~
 /testfile
+/games/*
+/move.cgi~
+/mytestfile

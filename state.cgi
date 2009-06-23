@@ -2,40 +2,48 @@
 import json
 import cgi
 import pickle
+import uuid
 from board import *
 
-import cgitb
+import cgitb                    # for debuging
 cgitb.enable()
 
-print("Content-Type: text/plain\n")
 
-def jsonmoves(board,side):
-    return json.dumps(dict([("%d:%d" % k, v) for k, v in board.allsidelegalmoves(side).items()]))
+def jsonmoves(board):
+    """return a json string with all of the moves for the side whose turn it is"""
+    return json.dumps(dict([("%d:%d" % k, v) for k, v in board.allturnlegalmoves().items()]))
 
 def jsonstate(board):
+    """return a json string representing the current state of the board"""
     return json.dumps(dict([("%d:%d" % k, str(v)) for k, v in board.state().items()]))
+
+print("Content-Type: text/plain\n")
     
+form = cgi.FieldStorage()       # get fields pased by url (get?)
 
+gameid = form.getvalue("gameid",None)
 
-b = Board()
-b.newgameboard()
+filename = None
 
-#print("Content-Type: text/html")
-# print("<TITLE>CGI script output</TITLE>")
-# print("<H1>This is my first CGI script</H1>")
-# print("Hello, world!")
-
-
-form = cgi.FieldStorage()
-turn = form.getvalue("turn","w")
-
-if (turn == "b"):               # WTF! why is this needed!
-    turn = "b"
+if not gameid:
+    gameid = str(int(uuid.uuid4()))
+    b = Board()
 else:
-    turn = "w"
+    readfile = open("games/" + str(gameid),"rb")
+    b =  pickle.load(readfile)
+    readfile.close()
+    #b = Board()
 
-print("'{positions:" + jsonstate(b) + ", moves:"+ jsonmoves(b,turn)+"}'")
 
-myfile = open("testfile","wb")
-pickle.dump(b,myfile)
-myfile.close()
+# turn = form.getvalue("turn","w")
+
+# if (turn == "b"):               # WTF! why is this needed!
+#     turn = "b"
+# else:
+#     turn = "w"
+
+print('{"positions":' + jsonstate(b) + ', "moves":'+ jsonmoves(b)+', "id":' + json.dumps(gameid) + "}")
+
+writefile = open("games/" + gameid,"wb")
+pickle.dump(b,writefile)
+writefile.close()
