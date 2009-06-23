@@ -4,6 +4,11 @@ import cgi
 import pickle
 from board import *
 
+import cgitb
+cgitb.enable()
+
+print("Content-Type: text/plain\n")
+
 def jsonmoves(board,side):
     return json.dumps(dict([("%d:%d" % k, v) for k, v in board.allsidelegalmoves(side).items()]))
 
