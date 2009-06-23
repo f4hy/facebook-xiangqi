@@ -4,29 +4,32 @@ import cgi
 import pickle
 from board import *
 
-import cgitb
+import cgitb                    # for debuging
 cgitb.enable()
 
-print("Content-Type: text/plain\n")
 
 def jsonmoves(board,side):
+    """return a json string with all of the moves for the given side"""
     return json.dumps(dict([("%d:%d" % k, v) for k, v in board.allsidelegalmoves(side).items()]))
 
 def jsonstate(board):
+    """return a json string representing the current state of the board"""
     return json.dumps(dict([("%d:%d" % k, str(v)) for k, v in board.state().items()]))
+
+print("Content-Type: text/plain\n")
     
+form = cgi.FieldStorage()       # get fields pased by url (get?)
+
+id = form.getvalue("id",None)
 
 
-b = Board()
-b.newgameboard()
 
-#print("Content-Type: text/html")
-# print("<TITLE>CGI script output</TITLE>")
-# print("<H1>This is my first CGI script</H1>")
-# print("Hello, world!")
+if not id:
+    b = Board()
+    b.newgameboard()
 
 
-form = cgi.FieldStorage()
+
 turn = form.getvalue("turn","w")
 
 if (turn == "b"):               # WTF! why is this needed!
