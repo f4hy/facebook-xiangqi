@@ -50,7 +50,7 @@ class Board:
         p = Piece
         #whites back row
         self.coordinates[0] = [Rook("w"),Horse("w"),Elephant("w"),
-                               Advisor("w"),General("w"),Advisor("W"),
+                               Advisor("w"),General("w"),Advisor("w"),
                                Elephant("w"),Horse("w"),Rook("w")]
 
         #black back row
@@ -80,7 +80,7 @@ class Board:
         self.coordinates[7][1] = Cannon("b")
         self.coordinates[7][7] = Cannon("b")
 
-        self.turn = "w"
+        self.turn = "w"         # White starts
 
     def point(self,index):
         """Return the piece on a point, or return none"""
@@ -136,20 +136,29 @@ class Board:
         """Returns a dictionary of all the legal moves for a side"""
         moves = {}
 
-        def legalmove(current,new):
-            testboard = copy.deepcopy(self)
-            testboard.move(current,new)
-            if testboard.check(color):
-                return False
-            return True
+        # def legalmove(current,new):
+        #     testboard = copy.deepcopy(self)
+        #     testboard.move(current,new)
+        #     if testboard.check(color):
+        #         return False
+        #     return True
 
         for piece in self.side(color):
+            def legalmove(new):
+                testboard = copy.deepcopy(self)
+                testboard.move(piece,new)
+                if testboard.check(color):
+                    return False
+                return True
+            
             piecemoves = self.availiblemoves(piece)
-            for candidatemove in piecemoves:
-                if not legalmove(piece,candidatemove):
-                    piecemoves.remove(candidatemove)
-            moves[piece] = piecemoves
-
+            moves[piece] = list(filter(legalmove,piecemoves))
+            # for candidatemove in piecemoves:
+                
+            #     if not legalmove(piece,candidatemove):
+            #         piecemoves.remove(candidatemove)
+            # moves[piece] = piecemoves
+                
         return moves
 
     def allturnlegalmoves(self):
@@ -162,9 +171,12 @@ class Board:
         if color == "w": enemycolor = "b"
         for opponent in self.side(enemycolor):
             if general in self.availiblemoves(opponent):
-                print("Check")
+#                print("Check")
                 return True
         return False
+    
+    def incheck(self):
+        return self.check(self.turn)
 
     def checkmate(self,color):
         """If in check, make every possible move to see if we can get out of check"""
