@@ -31,7 +31,7 @@ $(document).ready(function () {
 	    // $("body").append( $(this).data("moves") );
 	    // $("body").append( "omg");
 
-	    $(".square").droppable('disable');
+	    $(".square").droppable('disable').css({background:"yellow"});
 	    var selectedMoves = $(this).data("moves");
 	    for(var i=0; i < selectedMoves.length; i += 1) {
 		    getSquare(selectedMoves[i][0],selectedMoves[i][1]).droppable('enable');
@@ -58,11 +58,12 @@ $(document).ready(function () {
 
 
     function setboard(json) {
-	var boardState = json;
-	var pieces = boardState.positions;	
-	moves = boardState.moves;
-	id = boardState.id;
-	$("body").append("" + id + "\n");
+	var pieces = json.positions;	
+	moves = json.moves;
+	id = json.id;
+	check = json.check;
+	$("#messages").append("id:" + id + "\n");
+	$("#messages").append("check:" + check + "\n");
 	$(".piece").remove();
 	for (var x in pieces) {
 	    addPiece(pieces[x] ,"", x[0], x[2]);
