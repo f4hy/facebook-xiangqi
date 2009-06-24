@@ -9,13 +9,13 @@ import cgitb                    # for debuging
 cgitb.enable()
 
 
-def jsonmoves(board):
+def jsonprepmoves(board):
     """return a json string with all of the moves for the side whose turn it is"""
-    return json.dumps(dict([("%d:%d" % k, v) for k, v in board.allturnlegalmoves().items()]))
+    return dict([("%d:%d" % k, v) for k, v in board.allturnlegalmoves().items()])
 
-def jsonstate(board):
+def jsonprepstate(board):
     """return a json string representing the current state of the board"""
-    return json.dumps(dict([("%d:%d" % k, str(v)) for k, v in board.state().items()]))
+    return dict([("%d:%d" % k, str(v)) for k, v in board.state().items()])
 
 print("Content-Type: text/plain\n")
     
@@ -42,7 +42,15 @@ else:
 # else:
 #     turn = "w"
 
-print('{"positions":' + jsonstate(b) + ', "moves":'+ jsonmoves(b)+', "id":' + json.dumps(gameid) + "}")
+myjson = {}
+myjson["positions"] = jsonprepstate(b)
+myjson["moves"] = jsonprepmoves(b)
+myjson["id"] = gameid
+myjson["check"] = b.incheck()
+myjson["checkmate"] = b.checkmate(b.turn)
+
+print(json.dumps(myjson))
+#print('{"positions":' + jsonstate(b) + ', "moves":'+ jsonmoves(b)+', "id":' + json.dumps(gameid) + "}")
 
 writefile = open("games/" + gameid,"wb")
 pickle.dump(b,writefile)
