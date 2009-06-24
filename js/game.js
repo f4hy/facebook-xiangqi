@@ -46,6 +46,9 @@ $(document).ready(function () {
 					$(this).append(ui.draggable); // append the draged item
 					ui.draggable.css({left:"0px"}); // position it correctly
 					ui.draggable.css({top:"0px"}); 
+//					$("#board").empty();
+					var loading = "<div id=loading><img src='images/loading.gif' /> </div>";
+					$(loading).appendTo("#board");
 
 					$.post("move.cgi", {to: [$(this).data("x") , $(this).data("y") ] , from: [ui.draggable.data("x") , ui.draggable.data("y") ] , gameid: id} );
 					$.getJSON("state.cgi?gameid="+id, setboard );
@@ -65,6 +68,7 @@ $(document).ready(function () {
 	    addPiece(pieces[x] ,"", x[0], x[2]);
 	}
 	$(".droppable").css({background:"yellow"});
+	$("#loading").remove();
 	draginit();
     }
 
